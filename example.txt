@@ -1,0 +1,22 @@
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+systemctl start firewalld.service
+systemctl enable firewalld.service
+
+firewall-cmd --permanent --add-masquerade
+
+firewall-cmd --permanent --add-port=8080/tcp
+firewall-cmd --permanent --add-port=8080/udp
+firewall-cmd --permanent --add-forward-port=port=8080:proto=tcp:toport=8005:toaddr=47.56.200.200
+firewall-cmd --permanent --add-forward-port=port=8080:proto=udp:toport=8005:toaddr=47.56.200.200
+firewall-cmd --reload
+
+firewall-cmd --permanent --remove-port=8080/tcp
+firewall-cmd --permanent --remove-port=8080/udp
+firewall-cmd --permanent --remove-forward-port=port=8080:proto=tcp:toport=8005:toaddr=47.56.200.200
+firewall-cmd --permanent --remove-forward-port=port=8080:proto=udp:toport=8005:toaddr=47.56.200.200
+firewall-cmd --reload
+
+firewall-cmd --state
+firewall-cmd --list-ports
+firewall-cmd --list-forward-ports
